@@ -1,8 +1,9 @@
 import Head from 'next/head';
 import Feed from '../components/Feed';
 import Sidebar from '../components/Sidebar';
+import Widgets from '../components/Widgets';
 
-export default function Home() {
+export default function Home({news}) {
   return (
     <div >
       <Head>
@@ -18,9 +19,23 @@ export default function Home() {
       {/* Feed Section */}
       <Feed></Feed>
       { /* Widgets */}
-
+      <Widgets news={news}></Widgets>
       {/* Modal */}
       </main>
     </div>
   )
+}
+
+// https://saurav.tech/NewsAPI/top-headlines/category/business/us.json
+
+export async function getServerSideProps() {
+  const res = await fetch('https://saurav.tech/NewsAPI/top-headlines/category/business/us.json')
+  const data = await res.json();
+  const news = data.articles;
+  console.log(data, "esoy")
+  return {
+    props: {
+      news
+    }
+  }
 }

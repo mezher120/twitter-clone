@@ -20,7 +20,7 @@ export default function Post({post}) {
                     </div>
                 </div>
                 <p>{post.text}</p>
-                <img className="h-40" src={post.img} alt=''></img>
+                <img className="h-40 rounded-xl" src={post.img} alt=''></img>
                 <div className="flex justify-between p-2 text-gray-400">
                     <ChatBubbleBottomCenterIcon className="h-8 hover:bg-gray-200 hover:rounded-full cursor-pointer p-1 hover:text-green-500"></ChatBubbleBottomCenterIcon>
                     <TrashIcon className="h-8 hover:bg-gray-200 hover:rounded-full cursor-pointer p-1 hover:text-blue-600"></TrashIcon>
