@@ -1,11 +1,13 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import News from "./News";
+import Users from "./Users";
 
 
-export default function Widgets({news}) {
+export default function Widgets({news, users}) {
 
     const [moreNews, setMoreNews] = useState(4);
+    const [moreUsers, setMoreUsers] = useState(4);
 
   return (
     <div className="hidden md:w-[400px] xl:w-[750px] md:inline space-y-5">
@@ -29,6 +31,15 @@ export default function Widgets({news}) {
         )}
         <button onClick={() => setMoreNews(moreNews + 3)} className="text-blue-300 pl-4 pb-3 hover:text-blue-500">Show More</button>
         </div>
+
+        <div className="text-gray-700 space-y-5 bg-gray-100 rounded-xl p-1 m-5">
+            <h4 className="font-bold text-xl px-4">Who to follow</h4>
+        {users && users.slice(0,moreUsers).map(user =>
+            <Users user={user} />
+        )}
+        <button onClick={() => setMoreUsers(moreUsers + 3)} className="text-blue-300 pl-4 pb-3 hover:text-blue-500">Show More</button>
+        </div>
+
  
 
     </div>
