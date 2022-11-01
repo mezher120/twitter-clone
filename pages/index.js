@@ -36,7 +36,6 @@ export async function getServerSideProps() {
   const res1 = await fetch('https://randomuser.me/api/?results=50&inc=name,picture,login')
   const data1 = await res1.json();
   const users = data1.results;
-  console.log(data, "esoy")
   return {
     props: {
       news,
