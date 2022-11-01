@@ -3,3 +3,9 @@
 @import "tailwindcss/components";
 
 @import "tailwindcss/utilities";
+
+@layer components {
+    .hoverEffect {
+        @apply cursor-pointer hover:bg-gray-300 rounded-full w-[52px] xl:w-auto h-[52px] xl:h-auto xl:p-2
+    }
+}
