@@ -4,14 +4,22 @@ export const authOptions = {
   // Configure one or more authentication providers
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET 
     }),
     // ...add more providers here
   ],
 
   pages: {
-    signin: "/auth/signin"
+    signIn: "/auth/signin"
+  },
+
+  callbacks: {
+    async session({session, token}) {
+      session.user.username = session.user.name.split(" ").join('').toLowerCase();  // creamos un nuevo name formato username
+      session.user.uid = token.sub;  // agregamos nueva propieda uid con el token proporcionado por google
+      return session; // devuelve el nuevo session al provider
+    }
   }
 }
 export default NextAuth(authOptions)

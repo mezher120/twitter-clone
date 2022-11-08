@@ -1,13 +1,22 @@
 import { CameraIcon, FaceSmileIcon, PhotoIcon } from '@heroicons/react/24/outline'
 import React from 'react'
+import { useSession, signOut } from 'next-auth/react'
 
 export default function Input() {
+
+    const {data} = useSession();
+    const newImage = data && data.user.image.substring(0, data.user.image.length - 2);
+
+
   return (
+    <>
+    {data && (
     <div className='flex items-center border-b border-gray-200 space-x-3'>
         <img 
-        className='h-20 rounded-r-full cursor-pointer hover:brightness-95 self-start pt-2'
-        src='https://i.pinimg.com/736x/40/c5/3f/40c53ff5a0da610aa4daff660c962961.jpg' 
-        alt=''></img>
+        onClick={signOut}
+        className='h-20 w-20 rounded-full cursor-pointer hover:brightness-95 self-start m-2'
+        src={newImage}
+        alt=' '></img>
         <div className='w-full'>
             <div>
                 <textarea className='w-full border-none focus:ring-0' rows='3' placeholder='What"s happening'></textarea>
@@ -21,5 +30,8 @@ export default function Input() {
             </div>
         </div>
     </div>
+    )
+    }  
+    </>
   )
 }
