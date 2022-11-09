@@ -1,7 +1,8 @@
 import { ChartBarIcon, ChatBubbleBottomCenterIcon, EllipsisHorizontalCircleIcon, HeartIcon, ShareIcon, TrashIcon } from "@heroicons/react/24/outline";
-
+import Moment from "react-moment";
 
 export default function Post({post}) {
+
   return (
     <div>
         <div className="flex border-b">
@@ -11,16 +12,16 @@ export default function Post({post}) {
             <div className="flex flex-col w-full p-2 space-y-2">
                 <div className="flex justify-between">
                     <div className="space-x-1">
-                        <span className="font-bold">{post.name}</span>
-                        <span>{post.username}</span>
-                        <span>{post.timestamp}</span>
+                        <span className="font-bold">{post.data().name}</span>
+                        <span>{post.data().username}</span>
+                        <Moment fromNow>{post.data().timestamp.toDate()}</Moment>
                     </div>
                     <div className="hover:bg-gray-200 hover:rounded-full cursor-pointer">
                         <EllipsisHorizontalCircleIcon className="h-7"></EllipsisHorizontalCircleIcon>
                     </div>
                 </div>
-                <p>{post.text}</p>
-                <img className="h-40 rounded-xl" src={post.img} alt=''></img>
+                <p>{post.data().text}</p>
+                <img className="h-40 rounded-xl" src={post.data().image} alt=''></img>
                 <div className="flex justify-between p-2 text-gray-400">
                     <ChatBubbleBottomCenterIcon className="h-8 hover:bg-gray-200 hover:rounded-full cursor-pointer p-1 hover:text-green-500"></ChatBubbleBottomCenterIcon>
                     <TrashIcon className="h-8 hover:bg-gray-200 hover:rounded-full cursor-pointer p-1 hover:text-blue-600"></TrashIcon>
