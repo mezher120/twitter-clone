@@ -8,6 +8,7 @@ import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 export default function Input() {
 
     const {data} = useSession();
+    console.log(data)
     const newImage = data && data.user.image.substring(0, data.user.image.length - 2);
     const [input, setInput] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
@@ -69,7 +70,7 @@ export default function Input() {
         <img 
         onClick={signOut}
         className='h-20 w-20 rounded-full cursor-pointer hover:brightness-95 self-start m-2'
-        src={newImage}
+        src={data.user.image}
         alt=' '></img>
         <div className='w-full'>
             <div>

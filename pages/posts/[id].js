@@ -8,22 +8,34 @@ import { useRouter } from 'next/router';
 import Post from '../../components/Post';
 import { useEffect, useState } from 'react';
 import { db } from '../../firebase';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, onSnapshot, orderBy, query } from 'firebase/firestore';
+import Comment from '../../components/Comment';
+import { createDomMotionComponent } from 'framer-motion';
 
 export default function Posts({news, users}) {
 
     const router = useRouter();
     const { id } = router.query;
     const [post, setPost] = useState();
+    const [comments, setComments] = useState();
 
     useEffect(() => {
       onSnapshot(doc(db, "posts", id), (snapshot) => {
         setPost(snapshot) // we dont need to add .docs because we are already in the document
 
     })
-
     }, [db, id])
+
+
+    console.log(comments, "en id")
     
+    useEffect(() => { // getcomments of the posts
+        onSnapshot(query(collection(db, "posts", id, "comment"), orderBy("timestamp", 'desc')), (snapshot) => {
+            console.log(snapshot.docs, "en iddddd");
+            setComments(snapshot.docs);
+        })
+
+    },[db, id]);
 
   return (
     <div >
@@ -47,6 +59,11 @@ export default function Posts({news, users}) {
         </div>
 
         <Post id={id} post={post} > </Post>
+
+        {comments?.map(comment => 
+            <Comment key={comment.id} commentId={comment.id} originalPostId={id} comment={comment.data()} ></Comment>
+        )}
+
         </div>
         
       { /* Widgets */}

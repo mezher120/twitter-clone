@@ -45,8 +45,7 @@ export default function CommentModal() {
     }
 
   return (
-    <div>Modal
-
+    <div>
         {open && (
             <Modal
             isOpen={open}

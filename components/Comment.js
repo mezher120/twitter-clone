@@ -10,26 +10,22 @@ import { db, storage } from "../firebase";
 import { useRecoilState } from "recoil";
 import { modalState, postStateId } from "../atom/modalAtom";
 
-export default function Post({post, id}) {
+export default function Comment({commentId, originalPostId, comment}) {
+
+    console.log(commentId, originalPostId, comment, "aca estmoa")
+
     const {data} = useSession(); // uso la user session proporcionada por next-auth
     const [likes, setLikes] = useState([]);  // para almacenar los likes
-    const [comment, setComment] = useState([]); // para almacenar los COMMENTS
     const [hasLiked, setHasLiked] = useState(false);  // para almacenar si el usuario tiene o no like del post
     const [open, setOpen] = useRecoilState(modalState)  // uso el recoil para estado global y me importo el modalstate creado en carpeta atom
     const [postId, setPostId] = useRecoilState(postStateId); // para llevarme un ID de aca
-    console.log(post, 'hey')
 
 useEffect(()=> { // me traigo los likes, el id lo puse como titulo cuando lo setDoc en sendLike()
-    onSnapshot(collection(db, 'posts', id, 'likes'), (snapshot) => {
+    onSnapshot(collection(db, 'posts', originalPostId, 'comment', commentId, 'likes'), (snapshot) => {
         setLikes(snapshot.docs);
     })
-}, [db]);
+}, [db, originalPostId, commentId]);
 
-useEffect(()=> { // me traigo los likes, el id lo puse como titulo cuando lo setDoc en sendLike()
-    onSnapshot(collection(db, 'posts', id, 'comment'), (snapshot) => {
-        setComment(snapshot.docs);
-    })
-}, [db]);
 
 useEffect(() => {   // si cambia likes [], entonces me fijo si el usuario coincide con algun like de likesm si es asi cambio hasliked
     if (likes.some(like => like.id === data?.user.uid)) {
@@ -42,7 +38,7 @@ useEffect(() => {   // si cambia likes [], entonces me fijo si el usuario coinci
 async function deletePost() {
     if (window.confirm("Are you sure to delete the post?")) { // para abrir una ventana con ok y cancel antes de hacer lo que prosigue
         try {
-            await deleteDoc(doc(db, 'posts', id));  // eliminar el post
+            await deleteDoc(doc(db, 'posts', originalPostId, 'comment', commentId));  // eliminar el post
             if (post.data().image) {
                 await deleteObject(ref(storage, `posts/${id}/image`)); // para eliminar el storage con la imagen
             }
@@ -57,13 +53,13 @@ async function deletePost() {
 async function sendLike() { 
     if (data) {
     if (hasLiked) {
-        await deleteDoc(doc(db, 'posts', id, 'likes', data?.user.uid));
+        await deleteDoc(doc(db, 'posts', originalPostId, 'comment', commentId, 'likes', data?.user.uid));
         // delete y doc de firebase, selecciono la db, la collecion, segun el elemento, dentro de ahi busco carpeta likes y borro segun titulo dento
         setHasLiked(false);
     } else {
 
         try {
-            await setDoc(doc(db, 'posts', id, 'likes', data?.user.uid), {
+            await setDoc(doc(db, 'posts', originalPostId, 'comment', commentId, 'likes', data?.user.uid), {
                 name: data.user.name,
             })
             
@@ -81,21 +77,20 @@ async function sendLike() {
     <div>
         <div className="flex border-b">
             <div>
-                <img className="h-11 pt-2 rounded-full" src={post?.data()?.userImg} alt='user-img'></img>
+                <img className="h-11 pt-2 rounded-full" src={comment?.userImg} alt='user-img'></img>
             </div>
             <div className="flex flex-col w-full p-2 space-y-2">
                 <div className="flex justify-between">
                     <div className="space-x-1">
-                        <span className="font-bold">{post?.data()?.name}</span>
-                        <span>{post?.data()?.username}</span>
-                        <Moment fromNow>{post?.data()?.timestamp?.toDate()}</Moment>
+                        <span className="font-bold">{comment?.name}</span>
+                        <span>{comment?.username}</span>
+                        <Moment fromNow>{comment?.timestamp?.toDate()}</Moment>
                     </div>
                     <div className="hover:bg-gray-200 hover:rounded-full cursor-pointer">
                         <EllipsisHorizontalCircleIcon className="h-7"></EllipsisHorizontalCircleIcon>
                     </div>
                 </div>
-                <p>{post?.data()?.text}</p>
-                <img className="h-40 rounded-xl" src={post?.data()?.image} alt='user-img'></img>
+                <p>{comment?.comment}</p>
                 <div className="flex justify-between p-2 text-gray-400">
                    <div className="flex items-center">
                     <ChatBubbleBottomCenterIcon 
@@ -103,14 +98,13 @@ async function sendLike() {
                         if(!data) {
                             signIn()
                         } else {   
-                            setPostId(id)
+                            setPostId(originalPostId)
                             setOpen(!open)
                         }
                     }}
                     className="h-8 hover:bg-gray-200 hover:rounded-full cursor-pointer p-1 hover:text-green-500"></ChatBubbleBottomCenterIcon>
-                    <span className="text-green-500">{comment.length === 0 ? "" : comment.length}</span>
                    </div>
-                    {data?.user.uid === post?.data()?.id ? (
+                    {data?.user.uid === comment?.id ? (
                     <TrashIcon 
                     onClick={() => deletePost()}
                     className="h-8 hover:bg-gray-200 hover:rounded-full cursor-pointer p-1 hover:text-blue-600"></TrashIcon>
