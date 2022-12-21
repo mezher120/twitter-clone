@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { db } from '../firebase';
 import Input from './Input'
 import Post from './Post'
+import { AnimatePresence, motion } from "framer-motion"
 
 export default function Feed() {
   const [posts, setPosts] = useState([]);
@@ -14,6 +15,8 @@ export default function Feed() {
       setPosts(snapshot.docs);
     })
   },[]);
+
+  // console.log(posts, "here i am")
 
   // console.log(posts[0].data(), 'en fededede')
 
@@ -52,10 +55,22 @@ export default function Feed() {
             <Input></Input>
         </div>
         <div>
+          <AnimatePresence>
+            
           {posts && posts.map(post => 
-          <Post key={post.data().id} post={post}></Post>
+          <motion.div key={post.data().id}
+          initial= { {opacity: 0} }
+          animate = { {opacity: 1} }
+          exit = { {opacity: 0} }
+          transition = { {duration: 1}}
+          >
+
+            <Post key={post.data().id} post={post}></Post>
+
+          </motion.div>
             
             )}
+          </AnimatePresence>
         </div>
     </div>
   )

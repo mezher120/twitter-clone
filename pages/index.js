@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Feed from '../components/Feed';
 import Sidebar from '../components/Sidebar';
 import Widgets from '../components/Widgets';
+import CommentModal from '../components/CommentModal';
 
 export default function Home({news, users}) {
   return (
@@ -21,6 +22,8 @@ export default function Home({news, users}) {
       { /* Widgets */}
       <Widgets news={news} users={users}></Widgets>
       {/* Modal */}
+
+      <CommentModal></CommentModal>
       </main>
     </div>
   )

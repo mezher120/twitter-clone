@@ -7,11 +7,15 @@ import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Moment from "react-moment";
 import { db, storage } from "../firebase";
+import { useRecoilState } from "recoil";
+import { modalState, postStateId } from "../atom/modalAtom";
 
 export default function Post({post}) {
     const {data} = useSession(); // uso la user session proporcionada por next-auth
     const [likes, setLikes] = useState([]);  // para almacenar los likes
     const [hasLiked, setHasLiked] = useState(false);  // para almacenar si el usuario tiene o no like del post
+    const [open, setOpen] = useRecoilState(modalState)  // uso el recoil para estado global y me importo el modalstate creado en carpeta atom
+    const [postId, setPostId] = useRecoilState(postStateId); // para llevarme un ID de aca
     console.log(post, 'hey')
 
 useEffect(()=> { // me traigo los likes, el id lo puse como titulo cuando lo setDoc en sendLike()
@@ -29,10 +33,12 @@ useEffect(() => {   // si cambia likes [], entonces me fijo si el usuario coinci
 }, [likes])
 
 async function deletePost() {
-    if (window.confirm("Are you sure to delete the post?")) {
+    if (window.confirm("Are you sure to delete the post?")) { // para abrir una ventana con ok y cancel antes de hacer lo que prosigue
         try {
-            await deleteDoc(doc(db, 'posts', post.id));
-            await deleteObject(ref(storage, `posts/${post.id}/image`));
+            await deleteDoc(doc(db, 'posts', post.id));  // eliminar el post
+            if (post.data().image) {
+                await deleteObject(ref(storage, `posts/${post.id}/image`)); // para eliminar el storage con la imagen
+            }
             console.log('post deleted')
         } catch (error) {
             console.log(error.message);
@@ -68,7 +74,7 @@ async function sendLike() {
     <div>
         <div className="flex border-b">
             <div>
-                <img className="h-20 pt-2" src={post.userImg} alt=''></img>
+                <img className="h-11 pt-2 rounded-full" src={post?.data()?.userImg} alt='user-img'></img>
             </div>
             <div className="flex flex-col w-full p-2 space-y-2">
                 <div className="flex justify-between">
@@ -84,7 +90,17 @@ async function sendLike() {
                 <p>{post.data().text}</p>
                 <img className="h-40 rounded-xl" src={post.data().image} alt=''></img>
                 <div className="flex justify-between p-2 text-gray-400">
-                    <ChatBubbleBottomCenterIcon className="h-8 hover:bg-gray-200 hover:rounded-full cursor-pointer p-1 hover:text-green-500"></ChatBubbleBottomCenterIcon>
+                    <ChatBubbleBottomCenterIcon 
+                    onClick={() => {
+                        if(!data) {
+                            signIn()
+                        } else {
+                            
+                            setPostId(post.id)
+                            setOpen(!open)
+                        }
+                    }}
+                    className="h-8 hover:bg-gray-200 hover:rounded-full cursor-pointer p-1 hover:text-green-500"></ChatBubbleBottomCenterIcon>
                     {data?.user.uid === post.data().id ? (
                     <TrashIcon 
                     onClick={() => deletePost()}

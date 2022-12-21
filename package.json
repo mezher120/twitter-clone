@@ -11,12 +11,15 @@
   "dependencies": {
     "@heroicons/react": "^2.0.12",
     "firebase": "^9.13.0",
+    "framer-motion": "^7.6.5",
     "moment": "^2.29.4",
     "next": "13.0.1",
     "next-auth": "^4.15.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-moment": "^1.1.2"
+    "react-modal": "^3.16.1",
+    "react-moment": "^1.1.2",
+    "recoil": "^0.7.6"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",
