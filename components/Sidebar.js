@@ -47,7 +47,7 @@ export default function Sidebar() {
             <div className='hoverEffect text-gray-700 flex items-center justify-center xl:justify-start mt-auto'>
                 <img 
                 onClick={signOut}
-                src={data.user.image.substring(0, data.user.image.length - 2)} 
+                src={data.user.image} 
                 alt=''
                 className='h-12 rounded-full xl:mr-2' ></img>
                 <div className='leading-5 hidden xl:inline'>

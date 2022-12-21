@@ -55,8 +55,8 @@ async function deletePost() {
 }
 
 async function sendLike() { 
-    if (data) {
-    if (hasLiked) {
+    if (data) { //si esta conectado por el useSession
+    if (hasLiked) {  // verifique si tiene like
         await deleteDoc(doc(db, 'posts', id, 'likes', data?.user.uid));
         // delete y doc de firebase, selecciono la db, la collecion, segun el elemento, dentro de ahi busco carpeta likes y borro segun titulo dento
         setHasLiked(false);
@@ -95,7 +95,9 @@ async function sendLike() {
                     </div>
                 </div>
                 <p>{post?.data()?.text}</p>
+                {post?.data()?.image ? 
                 <img className="h-40 rounded-xl" src={post?.data()?.image} alt='user-img'></img>
+                : "" }
                 <div className="flex justify-between p-2 text-gray-400">
                    <div className="flex items-center">
                     <ChatBubbleBottomCenterIcon 

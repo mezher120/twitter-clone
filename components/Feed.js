@@ -65,7 +65,7 @@ export default function Feed() {
           transition = { {duration: 1}}
           >
 
-            <Post key={post.data().id} id={post.data().id} post={post}></Post>
+            <Post key={post.id} id={post.id} post={post}></Post>
 
           </motion.div>
             
