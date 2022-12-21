@@ -3,18 +3,21 @@ import {modalState, postStateId} from '../atom/modalAtom'
 import Modal from 'react-modal';
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
-import { collection, doc, onSnapshot } from "firebase/firestore";
+import { addDoc, collection, doc, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { CameraIcon, FaceSmileIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Moment from "react-moment";
-import {signOut } from 'next-auth/react'
+import {useSession } from 'next-auth/react'
+import { useRouter } from "next/router";   // es como el Router de React
 
 
 export default function CommentModal() {
 
+    const {data: session} = useSession(); // extraigo data y la renombro como session
     const [open, setOpen] = useRecoilState(modalState);
     const [postId, setPostId] = useRecoilState(postStateId);
     const [post, setPost] = useState("");
     const [input, setInput] = useState("");
+    const router = useRouter();
 
 
     useEffect(() => {
@@ -25,8 +28,20 @@ export default function CommentModal() {
 
       console.log(post)
 
-    function sendComment(params) {
-      console.log("hello")
+    async function sendComment(params) {
+      await addDoc(collection(db, "posts", postId, "comment"), { //agregamos documento, en la colleccion posts de 
+ // la db segun el postId que lo saca de la var global segun el cuadro apretado, y nombramos el nuevo doc que va 
+ // tener dentro de posts y creamos el objeto a agregar
+        comment: input,
+        name: session.user.name,
+        username: session.user.username,
+        userImg: session.user.image,
+        timestamp: serverTimestamp() // fx de firebase para hora del momento
+      })
+
+      setOpen(!open)
+      setInput("")
+      router.push(`/posts/${postId}`)
     }
 
   return (
